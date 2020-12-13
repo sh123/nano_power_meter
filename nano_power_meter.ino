@@ -12,7 +12,7 @@
 #define PIN_VHF A6
 #define SCREEN_UPDATE_PERIOD 1000
 #define MEASURE_PERIOD 1
-#define CALA_TABLE_SIZE 14
+#define CALA_TABLE_SIZE 16
 #define CALB_TABLE_SIZE 1
 
 struct cal_t {
@@ -21,6 +21,8 @@ struct cal_t {
 };
 
 cal_t calA_[CALA_TABLE_SIZE] = {
+  {  0,   -94 },
+  { 21,   -54 },
   { 50,   -32 },
   { 56,   -28 },
   { 59,   -24 },
@@ -84,7 +86,7 @@ float toMw(int dbm) {
 
 int toBarLengthA(int dbm) {
   double k = (double)(SCREEN_WIDTH) / (double)(calA_[CALA_TABLE_SIZE - 2].dbm - calA_[0].dbm);
-  return k * (double)(dbm - calA_[0].dbm);
+  return k * (double)(dbm - calA_[2].dbm);
 }
 
 int toBarLengthB(int dbm) {
@@ -93,10 +95,10 @@ int toBarLengthB(int dbm) {
 }
 
 int toDbmA(int adValue) {
-  int prevValue = 1;
-  int prevDbm = -50;
+  int prevValue = calA_[0].v;
+  int prevDbm = calA_[0].dbm;
   
-  for (int i = 0; i < CALA_TABLE_SIZE; i++) {
+  for (int i = 1; i < CALA_TABLE_SIZE; i++) {
    if (adValue >= prevValue && adValue <= calA_[i].v) {
      double k = (double)(calA_[i].dbm - prevDbm) / (double)(calA_[i].v - prevValue);
      return k * (double)(calA_[i].v - prevValue) + prevDbm;
@@ -108,10 +110,10 @@ int toDbmA(int adValue) {
 }
 
 int toDbmB(int adValue) {
-  int prevValue = 1;
-  int prevDbm = -50;
+  int prevValue = calB_[0].v;
+  int prevDbm = calB_[0].dbm;
   
-  for (int i = 0; i < CALA_TABLE_SIZE; i++) {
+  for (int i = 1; i < CALA_TABLE_SIZE; i++) {
    if (adValue >= prevValue && adValue <= calA_[i].v) {
      double k = (double)(calB_[i].dbm - prevDbm) / (double)(calB_[i].v - prevValue);
      return k * (double)(calB_[i].v - prevValue) + prevDbm;
