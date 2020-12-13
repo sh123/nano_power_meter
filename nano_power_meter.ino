@@ -143,7 +143,7 @@ bool printMeasuredValue(void *) {
   display_.fillRect(0, 0, toBarLengthA(dbmA), BAR_HEIGHT, SSD1306_WHITE);
 
   display_.setCursor(0, BAR_HEIGHT + 1);
-
+  display_.print("A: ");
   display_.print(dbmA);
   display_.print("dBm ");
   if (mwA >= 1) {
@@ -158,7 +158,7 @@ bool printMeasuredValue(void *) {
   display_.fillRect(0, 2 * BAR_HEIGHT + 2, toBarLengthB(dbmB), BAR_HEIGHT, SSD1306_WHITE);
 
   display_.setCursor(0, 3 * BAR_HEIGHT + 3);
-
+  display_.print("B: ");
   display_.print(dbmB);
   display_.print("dBm ");
   if (mwB >= 1) {
