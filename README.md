@@ -10,7 +10,7 @@ This project is Arduino Nano clone of W1GHZ power meter, please, read more at ht
 # Technical details
 - Measurement power range from -32 up to 20 dBm
 - Frequency range
-  - Channel A: 300 MHz - 7000 GHz, up to 12 GHz with performance degradation
+  - Channel A: 300 MHz - 7 GHz, up to 12 GHz with performance degradation
   - Channel B: DC up to 300 MHz
 - Based on Arduino Nano
 - Screen is [SSD1307](https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf)
