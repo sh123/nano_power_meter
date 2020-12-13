@@ -1,0 +1,18 @@
+"Id";"Designator";"Package";"Quantity";"Designation";"Supplier and ref";
+1;"A1";"Arduino_Nano";1;"Arduino_Nano_v3.x";;;
+2;"C1";"C_0805_2012Metric";1;"8.2pF";;;
+3;"C2";"C_0805_2012Metric";1;"15pF";;;
+4;"C3,C7,C8,C10";"C_0805_2012Metric";4;"0.1uF";;;
+5;"C4";"C_0805_2012Metric";1;".01uF";;;
+6;"C5";"C_0805_2012Metric";1;"100pF";;;
+7;"C6,C9";"C_0805_2012Metric";2;"C";;;
+8;"L1";"L_0805_2012Metric";1;"L";;;
+9;"R1";"R_0805_2012Metric";1;"51";;;
+10;"R2,R3,R5";"R_0805_2012Metric";3;"R";;;
+11;"R4";"R_0805_2012Metric";1;"10k";;;
+12;"U2";"SOIC-8_3.9x4.9mm_P1.27mm";1;"ad8307";;;
+13;"J3";"PinHeader_1x02_P2.54mm_Vertical";1;"Conn_01x02";;;
+14;"J4";"PinHeader_1x04_P2.54mm_Vertical";1;"Conn_01x04";;;
+15;"J1";"SMA_Samtec_SMA-J-P-H-ST-EM1_EdgeMount";1;"RF_UHF";;;
+16;"J2";"SMA_Samtec_SMA-J-P-H-ST-EM1_EdgeMount";1;"RF_SHF";;;
+17;"U1";"TSOP-6_1.65x3.05mm_P0.95mm";1;"ltc5508";;;

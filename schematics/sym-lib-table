@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name sh)(type Legacy)(uri /home/sh/src/projects/Electronics/projects/power_meter/sh.lib)(options "")(descr ""))
+)
