@@ -7,6 +7,8 @@ This project is Arduino Nano clone of W1GHZ power meter adopted for use with Ard
 
 ![alt text](images/device.png)
 
+![alt text](images/complete.png)
+
 # Technical details
 - Measurement power range from -32 up to 20 dBm
 - Frequency range
