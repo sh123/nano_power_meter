@@ -20,3 +20,5 @@ This project is Arduino Nano clone of W1GHZ power meter adopted for use with Ard
 - UHF/SHF part (left channel A) is based [LTC5507 RF Power Detector](https://www.analog.com/media/en/technical-documentation/data-sheets/5508fa.pdf), allows measurement from 300MHz up to 7GHz and up to approximately 12 GHz with some performance degradation.
 - HF/VHF part (right channel B) is based on [AD8307 Logarithmic Amplifier](https://www.analog.com/media/en/technical-documentation/data-sheets/AD8307.pdf), allows mesurement from DC up to 300 MHz
 
+# Dependencies
+- Arduino timer: https://github.com/contrem/arduino-timer
