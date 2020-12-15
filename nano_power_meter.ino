@@ -10,7 +10,6 @@
 
 #define SCREEN_WIDTH  128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 32  // OLED display height, in pixel
-#define MARK_LENGTH 4     // maximum signal delayed mark length
 
 #define PIN_SHF A7
 #define PIN_VHF A6
@@ -98,7 +97,7 @@ bool measure(void *) {
   if (vA > valueA_1M_) {
     valueA_1M_ = vA;
   }
-  int vB = analogRead(PIN_SHF);
+  int vB = analogRead(PIN_VHF);
   if (vB > valueB_) {
     valueB_ = vB;
   }
@@ -174,7 +173,7 @@ bool printMeasuredValue(void *) {
   display_.fillRect(0, 0, toBarLengthA(dbmA), BAR_HEIGHT, SSD1306_WHITE);
 
   int barA_1M = toBarLengthA(dbmA_1M);
-  display_.drawLine(barA_1M, BAR_HEIGHT, barA_1M, BAR_HEIGHT - MARK_LENGTH, SSD1306_WHITE);
+  display_.drawLine(barA_1M, 0, barA_1M, BAR_HEIGHT - 1, SSD1306_WHITE);
 
   display_.setCursor(0, BAR_HEIGHT + 1);
   display_.print("A: ");
@@ -193,8 +192,8 @@ bool printMeasuredValue(void *) {
   display_.fillRect(0, 2 * BAR_HEIGHT + 2, toBarLengthB(dbmB), BAR_HEIGHT, SSD1306_WHITE);
 
   int barB_1M = toBarLengthA(dbmB_1M);
-  display_.drawLine(barB_1M, 3 * BAR_HEIGHT + 2 - MARK_LENGTH, barB_1M, 3 * BAR_HEIGHT + 2 - MARK_LENGTH, SSD1306_WHITE);
-  
+  display_.drawLine(barB_1M, 2 * BAR_HEIGHT + 2, barB_1M, 3 * BAR_HEIGHT + 1, SSD1306_WHITE);
+
   display_.setCursor(0, 3 * BAR_HEIGHT + 3);
   display_.print("B: ");
   display_.print(dbmB);
