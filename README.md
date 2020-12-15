@@ -1,5 +1,5 @@
 # Introduction
-Dual channel Arduino Nano RF power milliwatt meter meter for HF/VHF/UHF/SHF bands. 
+Dual channel Arduino Nano RF milliwatt power meter for HF/VHF/UHF/SHF bands. 
 
 This project is Arduino Nano clone of W1GHZ power meter adopted for use with Arduino Nano and SSD1307 OLED screen. Read more details at http://www.w1ghz.org/new/portable_powermeter.pdf
 
