@@ -12,7 +12,7 @@
 #define SCREEN_HEIGHT 32  // OLED display height, in pixel
 
 #define PIN_SHF A7
-#define PIN_VHF A6
+#define PIN_VHF A2
 
 #define SCREEN_UPDATE_PERIOD_US 1000UL*1000UL
 #define MEASURE_PERIOD_US       500UL
