@@ -4,16 +4,25 @@
 #include <Adafruit_SSD1306.h>
 #include <arduino-timer.h>
 
-#define STARTUP_DELAY 1000
+#define STARTUP_DELAY_MS 500
+
 #define BAR_HEIGHT 7
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 32 // OLED display height, in pixel
+
+#define SCREEN_WIDTH  128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 32  // OLED display height, in pixel
+#define MARK_LENGTH 4     // maximum signal delayed mark length
+
 #define PIN_SHF A7
 #define PIN_VHF A6
-#define SCREEN_UPDATE_PERIOD 1000
-#define MEASURE_PERIOD 1
+
+#define SCREEN_UPDATE_PERIOD_US 1000UL*1000UL
+#define MEASURE_PERIOD_US       500UL
+#define MEASURE_PERIOD_1M_US    60UL*1000UL*1000UL
+
 #define CALA_TABLE_SIZE 16
 #define CALB_TABLE_SIZE 1
+
+#define DEFAULT_VALUE 50
 
 struct cal_t {
   int v;
@@ -44,8 +53,8 @@ cal_t calB_[CALB_TABLE_SIZE] = {
   { 50,   -32 }
 };
 
-int valueA_, valueB_;
-auto timer_ = timer_create_default();
+int valueA_, valueB_, valueA_1M_, valueB_1M_;
+Timer<3, micros> timer_;
 
 Adafruit_SSD1306 display_(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire);
 
@@ -65,19 +74,38 @@ void setup() {
   display_.setCursor(8, 8);     // Start at top-left corner
   display_.print(F("PWR meter"));
   display_.display();
-  delay(STARTUP_DELAY);
+  delay(STARTUP_DELAY_MS);
   
   display_.clearDisplay();
   display_.display();
 
-  valueA_ = valueB_ = 50;
-  
-  timer_.every(SCREEN_UPDATE_PERIOD, printMeasuredValue);
-  timer_.every(MEASURE_PERIOD, measure);
+  valueA_ = valueB_ = valueA_1M_ = valueB_1M_ = DEFAULT_VALUE;
+
+  timer_.every(MEASURE_PERIOD_1M_US, clean1MValue);
+  timer_.every(SCREEN_UPDATE_PERIOD_US, printMeasuredValue);
+  timer_.every(MEASURE_PERIOD_US, measure);
 }
 
 void loop() {
   timer_.tick();
+}
+
+bool measure(void *) {
+  int vA = analogRead(PIN_SHF);
+  if (vA > valueA_) {
+    valueA_ = vA;
+  }
+  if (vA > valueA_1M_) {
+    valueA_1M_ = vA;
+  }
+  int vB = analogRead(PIN_SHF);
+  if (vB > valueB_) {
+    valueB_ = vB;
+  }
+  if (vB > valueB_1M_) {
+    valueB_1M_ = vB;
+  }
+  return true;
 }
 
 float toMw(int dbm) {
@@ -124,25 +152,29 @@ int toDbmB(int adValue) {
   return calA_[CALA_TABLE_SIZE - 1].dbm;
 }
 
-bool measure(void *) {
-  int vA = analogRead(PIN_SHF);
-  if (vA > valueA_) {
-    valueA_ = vA;
-  }
+bool clean1MValue(void *) {
+  valueA_1M_ = valueB_1M_ = DEFAULT_VALUE;
   return true;
 }
 
 bool printMeasuredValue(void *) {
   int dbmA = toDbmA(valueA_);
+  int dbmA_1M = toDbmA(valueA_1M_);
   float mwA = toMw(dbmA);
+  
   int dbmB = toDbmB(valueB_);
+  int dbmB_1M = toDbmA(valueB_1M_);
   float mwB = toMw(dbmB);
   
   display_.clearDisplay();
   display_.setTextSize(1);
 
+  // channel A
   display_.drawRect(0, 0, SCREEN_WIDTH, BAR_HEIGHT, SSD1306_WHITE);
   display_.fillRect(0, 0, toBarLengthA(dbmA), BAR_HEIGHT, SSD1306_WHITE);
+
+  int barA_1M = toBarLengthA(dbmA_1M);
+  display_.drawLine(barA_1M, BAR_HEIGHT, barA_1M, BAR_HEIGHT - MARK_LENGTH, SSD1306_WHITE);
 
   display_.setCursor(0, BAR_HEIGHT + 1);
   display_.print("A: ");
@@ -155,10 +187,14 @@ bool printMeasuredValue(void *) {
     display_.print(mwA * 1000);
     display_.print("uW ");
   }
-  
+
+  // channel B
   display_.drawRect(0, 2 * BAR_HEIGHT + 2, SCREEN_WIDTH, BAR_HEIGHT, SSD1306_WHITE);
   display_.fillRect(0, 2 * BAR_HEIGHT + 2, toBarLengthB(dbmB), BAR_HEIGHT, SSD1306_WHITE);
 
+  int barB_1M = toBarLengthA(dbmB_1M);
+  display_.drawLine(barB_1M, 3 * BAR_HEIGHT + 2 - MARK_LENGTH, barB_1M, 3 * BAR_HEIGHT + 2 - MARK_LENGTH, SSD1306_WHITE);
+  
   display_.setCursor(0, 3 * BAR_HEIGHT + 3);
   display_.print("B: ");
   display_.print(dbmB);
@@ -172,6 +208,6 @@ bool printMeasuredValue(void *) {
   }
   
   display_.display();
-  valueA_ = 0; 
+  valueA_ = valueB_ = DEFAULT_VALUE; 
   return true;
 }
