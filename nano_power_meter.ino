@@ -112,7 +112,7 @@ float toMw(int dbm) {
 }
 
 int toBarLengthA(int dbm) {
-  double k = (double)(SCREEN_WIDTH) / (double)(calA_[CALA_TABLE_SIZE - 2].dbm - calA_[0].dbm);
+  double k = (double)(SCREEN_WIDTH) / (double)(calA_[CALA_TABLE_SIZE - 2].dbm - calA_[2].dbm);
   return k * (double)(dbm - calA_[2].dbm);
 }
 
