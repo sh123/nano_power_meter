@@ -91,8 +91,8 @@ void setup() {
   display_.clearDisplay();
   display_.display();
 
-  valueA_ = valueB_ = DEFAULT_VALUE_A;
-  valueA_1M_ = valueB_1M_ = DEFAULT_VALUE_B;
+  valueA_ = valueA_1M_ = DEFAULT_VALUE_A;
+  valueB_ = valueB_1M_ = DEFAULT_VALUE_B;
 
   timer_.every(MEASURE_PERIOD_1M_US, clean1MValue);
   timer_.every(SCREEN_UPDATE_PERIOD_US, printMeasuredValue);
