@@ -19,7 +19,7 @@
 #define MEASURE_PERIOD_1M_US    60UL*1000UL*1000UL
 
 #define CALA_TABLE_SIZE 16
-#define CALB_TABLE_SIZE 1
+#define CALB_TABLE_SIZE 14
 
 #define DEFAULT_VALUE 50
 
@@ -49,7 +49,20 @@ cal_t calA_[CALA_TABLE_SIZE] = {
 
 // TODO, calibrate for HF/VHF channel B
 cal_t calB_[CALB_TABLE_SIZE] = {
-  { 50,   -32 }
+  {   0,  -90 },
+  {  80,  -80 },
+  { 100,  -70 },
+  { 150,  -60 },
+  { 210,  -50 },
+  { 290,  -40 },
+  { 308,  -30 },
+  { 330,  -20 },
+  { 410,  -10 },
+  { 480,    0 },
+  { 515,   10 },
+  { 540,   20 },
+  { 540,   20 },
+  { 560,   30 }
 };
 
 int valueA_, valueB_, valueA_1M_, valueB_1M_;
@@ -117,16 +130,18 @@ int toBarLengthA(int dbm) {
 }
 
 int toBarLengthB(int dbm) {
-  double k = (double)(SCREEN_WIDTH) / (double)(calB_[CALB_TABLE_SIZE - 2].dbm - calB_[0].dbm);
-  return k * (double)(dbm - calB_[0].dbm);
+  double k = (double)(SCREEN_WIDTH) / (double)(calB_[CALB_TABLE_SIZE - 2].dbm - calB_[1].dbm);
+  return k * (double)(dbm - calB_[1].dbm);
 }
 
 int toDbmA(int adValue) {
   int prevValue = calA_[0].v;
   int prevDbm = calA_[0].dbm;
+
+  if (adValue <= prevValue) return prevDbm;
   
   for (int i = 1; i < CALA_TABLE_SIZE; i++) {
-   if (adValue >= prevValue && adValue <= calA_[i].v) {
+   if (adValue > prevValue && adValue <= calA_[i].v) {
      double k = (double)(calA_[i].dbm - prevDbm) / (double)(calA_[i].v - prevValue);
      return k * (double)(calA_[i].v - prevValue) + prevDbm;
    }
@@ -140,15 +155,17 @@ int toDbmB(int adValue) {
   int prevValue = calB_[0].v;
   int prevDbm = calB_[0].dbm;
   
-  for (int i = 1; i < CALA_TABLE_SIZE; i++) {
-   if (adValue >= prevValue && adValue <= calA_[i].v) {
+  if (adValue <= prevValue) return prevDbm;
+  
+  for (int i = 1; i < CALB_TABLE_SIZE; i++) {
+   if (adValue > prevValue && adValue <= calB_[i].v) {
      double k = (double)(calB_[i].dbm - prevDbm) / (double)(calB_[i].v - prevValue);
      return k * (double)(calB_[i].v - prevValue) + prevDbm;
    }
    prevValue = calB_[i].v;
    prevDbm = calB_[i].dbm;
   }
-  return calA_[CALA_TABLE_SIZE - 1].dbm;
+  return calB_[CALB_TABLE_SIZE - 1].dbm;
 }
 
 bool clean1MValue(void *) {
@@ -205,7 +222,6 @@ bool printMeasuredValue(void *) {
     display_.print(mwB * 1000);
     display_.print("uW ");
   }
-  
   display_.display();
   valueA_ = valueB_ = DEFAULT_VALUE; 
   return true;
