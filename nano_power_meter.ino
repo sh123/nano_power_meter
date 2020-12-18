@@ -21,7 +21,8 @@
 #define CALA_TABLE_SIZE 16
 #define CALB_TABLE_SIZE 14
 
-#define DEFAULT_VALUE 50
+#define DEFAULT_VALUE_A 50
+#define DEFAULT_VALUE_B 150
 
 struct cal_t {
   int v;
@@ -61,7 +62,6 @@ cal_t calB_[CALB_TABLE_SIZE] = {
   { 480,    0 },
   { 515,   10 },
   { 540,   20 },
-  { 540,   20 },
   { 560,   30 }
 };
 
@@ -91,7 +91,8 @@ void setup() {
   display_.clearDisplay();
   display_.display();
 
-  valueA_ = valueB_ = valueA_1M_ = valueB_1M_ = DEFAULT_VALUE;
+  valueA_ = valueB_ = DEFAULT_VALUE_A;
+  valueA_1M_ = valueB_1M_ = DEFAULT_VALUE_B;
 
   timer_.every(MEASURE_PERIOD_1M_US, clean1MValue);
   timer_.every(SCREEN_UPDATE_PERIOD_US, printMeasuredValue);
@@ -130,8 +131,8 @@ int toBarLengthA(int dbm) {
 }
 
 int toBarLengthB(int dbm) {
-  double k = (double)(SCREEN_WIDTH) / (double)(calB_[CALB_TABLE_SIZE - 2].dbm - calB_[1].dbm);
-  return k * (double)(dbm - calB_[1].dbm);
+  double k = (double)(SCREEN_WIDTH) / (double)(calB_[CALB_TABLE_SIZE - 3].dbm - calB_[3].dbm);
+  return k * (double)(dbm - calB_[3].dbm);
 }
 
 int toDbmA(int adValue) {
@@ -143,7 +144,7 @@ int toDbmA(int adValue) {
   for (int i = 1; i < CALA_TABLE_SIZE; i++) {
    if (adValue > prevValue && adValue <= calA_[i].v) {
      double k = (double)(calA_[i].dbm - prevDbm) / (double)(calA_[i].v - prevValue);
-     return k * (double)(calA_[i].v - prevValue) + prevDbm;
+     return k * (double)(adValue - prevValue) + prevDbm;
    }
    prevValue = calA_[i].v;
    prevDbm = calA_[i].dbm;
@@ -154,13 +155,12 @@ int toDbmA(int adValue) {
 int toDbmB(int adValue) {
   int prevValue = calB_[0].v;
   int prevDbm = calB_[0].dbm;
-  
   if (adValue <= prevValue) return prevDbm;
   
   for (int i = 1; i < CALB_TABLE_SIZE; i++) {
    if (adValue > prevValue && adValue <= calB_[i].v) {
      double k = (double)(calB_[i].dbm - prevDbm) / (double)(calB_[i].v - prevValue);
-     return k * (double)(calB_[i].v - prevValue) + prevDbm;
+     return k * (adValue - prevValue) + prevDbm;
    }
    prevValue = calB_[i].v;
    prevDbm = calB_[i].dbm;
@@ -169,7 +169,8 @@ int toDbmB(int adValue) {
 }
 
 bool clean1MValue(void *) {
-  valueA_1M_ = valueB_1M_ = DEFAULT_VALUE;
+  valueA_1M_ = DEFAULT_VALUE_A;
+  valueB_1M_ = DEFAULT_VALUE_B;
   return true;
 }
 
@@ -179,7 +180,7 @@ bool printMeasuredValue(void *) {
   float mwA = toMw(dbmA);
   
   int dbmB = toDbmB(valueB_);
-  int dbmB_1M = toDbmA(valueB_1M_);
+  int dbmB_1M = toDbmB(valueB_1M_);
   float mwB = toMw(dbmB);
   
   display_.clearDisplay();
@@ -208,7 +209,7 @@ bool printMeasuredValue(void *) {
   display_.drawRect(0, 2 * BAR_HEIGHT + 2, SCREEN_WIDTH, BAR_HEIGHT, SSD1306_WHITE);
   display_.fillRect(0, 2 * BAR_HEIGHT + 2, toBarLengthB(dbmB), BAR_HEIGHT, SSD1306_WHITE);
 
-  int barB_1M = toBarLengthA(dbmB_1M);
+  int barB_1M = toBarLengthB(dbmB_1M);
   display_.drawLine(barB_1M, 2 * BAR_HEIGHT + 2, barB_1M, 3 * BAR_HEIGHT + 1, SSD1306_WHITE);
 
   display_.setCursor(0, 3 * BAR_HEIGHT + 3);
@@ -223,6 +224,7 @@ bool printMeasuredValue(void *) {
     display_.print("uW ");
   }
   display_.display();
-  valueA_ = valueB_ = DEFAULT_VALUE; 
+  valueA_ = DEFAULT_VALUE_A; 
+  valueB_ = DEFAULT_VALUE_B; 
   return true;
 }
