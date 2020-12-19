@@ -48,7 +48,6 @@ cal_t calA_[CALA_TABLE_SIZE] = {
   { 1024,  30 }
 };
 
-// TODO, calibrate for HF/VHF channel B
 cal_t calB_[CALB_TABLE_SIZE] = {
   {   0,  -90 },
   {  80,  -80 },
@@ -175,18 +174,15 @@ bool clean1MValue(void *) {
 }
 
 bool printMeasuredValue(void *) {
-  int dbmA = toDbmA(valueA_);
-  int dbmA_1M = toDbmA(valueA_1M_);
-  float mwA = toMw(dbmA);
-  
-  int dbmB = toDbmB(valueB_);
-  int dbmB_1M = toDbmB(valueB_1M_);
-  float mwB = toMw(dbmB);
   
   display_.clearDisplay();
   display_.setTextSize(1);
 
   // channel A
+  int dbmA = toDbmA(valueA_);
+  int dbmA_1M = toDbmA(valueA_1M_);
+  float mwA = toMw(dbmA);
+  
   display_.drawRect(0, 0, SCREEN_WIDTH, BAR_HEIGHT, SSD1306_WHITE);
   display_.fillRect(0, 0, toBarLengthA(dbmA), BAR_HEIGHT, SSD1306_WHITE);
 
@@ -206,6 +202,10 @@ bool printMeasuredValue(void *) {
   }
 
   // channel B
+  int dbmB = toDbmB(valueB_);
+  int dbmB_1M = toDbmB(valueB_1M_);
+  float mwB = toMw(dbmB);
+  
   display_.drawRect(0, 2 * BAR_HEIGHT + 2, SCREEN_WIDTH, BAR_HEIGHT, SSD1306_WHITE);
   display_.fillRect(0, 2 * BAR_HEIGHT + 2, toBarLengthB(dbmB), BAR_HEIGHT, SSD1306_WHITE);
 
