@@ -13,6 +13,7 @@
 
 #define PIN_SHF A7
 #define PIN_VHF A2
+#define PIN_BUZZER 2
 
 #define SCREEN_UPDATE_PERIOD_US 1000UL*1000UL
 #define MEASURE_PERIOD_US       500UL
@@ -93,6 +94,8 @@ void setup() {
   valueA_ = valueA_1M_ = DEFAULT_VALUE_A;
   valueB_ = valueB_1M_ = DEFAULT_VALUE_B;
 
+  pinMode(PIN_BUZZER, OUTPUT);
+  
   timer_.every(MEASURE_PERIOD_1M_US, clean1MValue);
   timer_.every(SCREEN_UPDATE_PERIOD_US, printMeasuredValue);
   timer_.every(MEASURE_PERIOD_US, measure);
@@ -173,6 +176,16 @@ bool clean1MValue(void *) {
   return true;
 }
 
+int getTone(int dbmA, int dbmB) {
+  if (dbmA > -30) {
+    return 30 * (dbmA + 30);
+  }
+  if (dbmB > -50) {
+    return 25 * (dbmA + 50);
+  }
+  return 0;
+}
+
 bool printMeasuredValue(void *) {
   
   display_.clearDisplay();
@@ -225,6 +238,14 @@ bool printMeasuredValue(void *) {
   }
   display_.display();
   valueA_ = DEFAULT_VALUE_A; 
-  valueB_ = DEFAULT_VALUE_B; 
+  valueB_ = DEFAULT_VALUE_B;
+
+  // buzzer
+  int toneHz = getTone(dbmA, dbmB);
+  if (toneHz > 0) {
+    tone(PIN_BUZZER, toneHz, 20);
+  } else {
+    noTone(PIN_BUZZER);
+  }
   return true;
 }
