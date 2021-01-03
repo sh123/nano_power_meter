@@ -177,13 +177,15 @@ bool clean1MValue(void *) {
 }
 
 int getTone(int dbmA, int dbmB) {
-  if (dbmA > -30) {
+  if (dbmA > -30 && dbmA > dbmB) {
     return 30 * (dbmA + 30);
   }
-  if (dbmB > -50) {
+  else if (dbmB > -50) {
     return 25 * (dbmA + 50);
   }
-  return 0;
+  else {
+    return 0;
+  }
 }
 
 bool printMeasuredValue(void *) {
