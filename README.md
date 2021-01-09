@@ -24,3 +24,6 @@ This project is Arduino Nano clone of W1GHZ power meter adopted for use with Ard
 
 # Dependencies
 - Arduino timer: https://github.com/contrem/arduino-timer
+
+# Notes
+- LTC5507 shows better sensitivity when additional shield is added
