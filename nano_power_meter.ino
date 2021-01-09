@@ -18,12 +18,17 @@
 #define SCREEN_UPDATE_PERIOD_US 1000UL*1000UL
 #define MEASURE_PERIOD_US       500UL
 #define MEASURE_PERIOD_1M_US    60UL*1000UL*1000UL
+#define BUZZER_PERIOD_US        100UL*1000UL
 
 #define CALA_TABLE_SIZE 16
 #define CALB_TABLE_SIZE 14
 
 #define DEFAULT_VALUE_A 50
 #define DEFAULT_VALUE_B 150
+
+#define BUZZER_MAX_RATE 10
+#define BUZZER_TONE 1000
+#define BUZZER_DURATION_MS 10
 
 struct cal_t {
   int v;
@@ -33,9 +38,9 @@ struct cal_t {
 cal_t calA_[CALA_TABLE_SIZE] = {
   {  0,   -94 },
   { 21,   -54 },
-  { 50,   -32 },
-  { 56,   -28 },
-  { 59,   -24 },
+  { 56,   -32 },
+  { 59,   -28 },
+  { 60,   -24 },
   { 63,   -20 },
   { 72,   -16 },
   { 102,  -12 },
@@ -66,7 +71,9 @@ cal_t calB_[CALB_TABLE_SIZE] = {
 };
 
 int valueA_, valueB_, valueA_1M_, valueB_1M_;
-Timer<3, micros> timer_;
+unsigned int buzzerRate_, buzzerCounter_;
+
+Timer<4, micros> timer_;
 
 Adafruit_SSD1306 display_(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire);
 
@@ -93,12 +100,14 @@ void setup() {
 
   valueA_ = valueA_1M_ = DEFAULT_VALUE_A;
   valueB_ = valueB_1M_ = DEFAULT_VALUE_B;
+  buzzerRate_ = buzzerCounter_ = 0;
 
   pinMode(PIN_BUZZER, OUTPUT);
   
   timer_.every(MEASURE_PERIOD_1M_US, clean1MValue);
   timer_.every(SCREEN_UPDATE_PERIOD_US, printMeasuredValue);
   timer_.every(MEASURE_PERIOD_US, measure);
+  timer_.every(BUZZER_PERIOD_US, buzzer);
 }
 
 void loop() {
@@ -176,12 +185,23 @@ bool clean1MValue(void *) {
   return true;
 }
 
-int getTone(int dbmA, int dbmB) {
+bool buzzer(void *) {
+  if (buzzerRate_ > 0 && buzzerCounter_ % buzzerRate_ == 0) {
+    tone(PIN_BUZZER, BUZZER_TONE, BUZZER_DURATION_MS);
+  }
+  else {
+    noTone(PIN_BUZZER);
+  }
+  buzzerCounter_++;
+  return true;
+}
+
+int getBuzzerRate(int dbmA, int dbmB) {
   if (dbmA > -30 && dbmA > dbmB) {
-    return 30 * (dbmA + 30);
+    return -0.2 * (double)(dbmA + 30) + BUZZER_MAX_RATE;
   }
   else if (dbmB > -50) {
-    return 25 * (dbmA + 50);
+    return -0.14 * (double)(dbmB + 50) + BUZZER_MAX_RATE;
   }
   else {
     return 0;
@@ -242,12 +262,6 @@ bool printMeasuredValue(void *) {
   valueA_ = DEFAULT_VALUE_A; 
   valueB_ = DEFAULT_VALUE_B;
 
-  // buzzer
-  int toneHz = getTone(dbmA, dbmB);
-  if (toneHz > 0) {
-    tone(PIN_BUZZER, toneHz, 20);
-  } else {
-    noTone(PIN_BUZZER);
-  }
+  buzzerRate_ = getBuzzerRate(dbmA, dbmB);
   return true;
 }
