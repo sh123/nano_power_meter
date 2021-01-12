@@ -12,7 +12,7 @@ Unlike original meter, which is just an indicator, this device shows precise DBM
 ![alt text](images/complete.png)
 
 # Technical details
-- Measurement power range from -32 up to 20 dBm on channel A and -60 up to 20 dBm on channel B
+- Measurement power range from -32 up to 20 dBm on channel A and -60 up to 20 dBm on channel B, with external attenuator could be used for larger values.
 - Frequency range
   - Channel A: 300 MHz - 7 GHz, up to 12 GHz with performance degradation
   - Channel B: 10 KHz up to 300 MHz
