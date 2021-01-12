@@ -30,4 +30,4 @@ Unlike original meter, which is just an indicator, this device shows precise DBM
 - Arduino timer: https://github.com/contrem/arduino-timer
 
 # Results
-Sucessfully shows power values for various ISM signals, such as 5 GHz, 2.4 GHz WiFi, 433/868 MHz ISM devices and amateur radio transmissions at close range. At SHF band good sensitivity and results are achieved when using cheap Vivaldi antenna. Also, additional shield could be helpful. Device must be powered from the battery only, powering from PC USB will cause PC USB RFI to be measured by the device.
+Sucessfully shows power values for various ISM signals, such as 5 GHz, 2.4 GHz WiFi, 433/868 MHz ISM devices and amateur radio transmissions at close range. At SHF band good sensitivity and results are achieved when using cheap Vivaldi antenna. Also, additional shield could be helpful. Device must be powered from the battery only, powering from PC USB will cause PC USB RFI and other noise to be measured by the device.
