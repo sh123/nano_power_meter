@@ -27,7 +27,7 @@
 #define DEFAULT_VALUE_B 150
 
 #define BUZZER_MAX_RATE 10
-#define BUZZER_TONE 1000
+#define BUZZER_TONE 500
 #define BUZZER_DURATION_MS 10
 
 struct cal_t {
