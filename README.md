@@ -11,8 +11,6 @@ Unlike original meter, which is just an indicator, this device shows precise DBM
 
 ![alt text](images/complete.png)
 
-![alt text](images/devantennas.png)
-
 # Technical details
 - Measurement power range from -32 up to 20 dBm on channel A and -60 up to 20 dBm on channel B
 - Frequency range
