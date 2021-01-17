@@ -28,7 +28,7 @@ Unlike original meter, which is just an indicator, this device shows precise dBm
 - Arduino timer: https://github.com/contrem/arduino-timer
 
 # Results
-Sucessfully shows power values for various ISM signals, such as 5 GHz, 2.4 GHz WiFi, 433/868 MHz ISM devices and amateur radio transmissions at close range. 
+Sucessfully shows power values for various ISM signals, such as 5 GHz, 2.4 GHz WiFi, Bluetooth, 433/868 MHz ISM devices at close range and amateur radio transmissions. 
 
 At SHF band good sensitivity and results are achieved when using cheap Vivaldi antenna. 
 
