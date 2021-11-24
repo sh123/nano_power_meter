@@ -1,7 +1,7 @@
 # Introduction
-Dual channel Arduino Nano RF milliwatt power meter for HF/VHF/UHF/SHF bands. Can be used for different RF equipment troubleshooting, RF leakage search and antenna radiation/gain measurements and comparison.
+Dual channel Arduino Nano RF milliwatt power meter for HF/VHF/UHF/SHF bands. Can be used for power measurement, different RF equipment troubleshooting, RF leakage search and antenna radiation/gain measurements and comparison.
 
-This project is Arduino Nano clone of W1GHZ power meter adopted for use with Arduino Nano and SSD1307 OLED screen. Read more details at http://www.w1ghz.org/new/portable_powermeter.pdf. 
+This project is Arduino Nano clone of W1GHZ power meter adopted for use with Arduino Nano and SSD1307 OLED screen. Read more details at http://www.w1ghz.org/new/portable_powermeter.pdf.
 
 Unlike original meter, which is just an indicator, this device shows precise dBm values and could be calibrated, calibration table is stored in the sketch. Moreover, device takes maximum RF power value during 1 second interval, which allows signal duration measurements down to 1 ms and marks maximum value during 1 minute interval on the bar.
 
@@ -28,7 +28,7 @@ Unlike original meter, which is just an indicator, this device shows precise dBm
 - Arduino timer: https://github.com/contrem/arduino-timer
 
 # Results
-Sucessfully shows power values for various ISM signals, such as 5 GHz, 2.4 GHz WiFi, Bluetooth, 433/868 MHz ISM devices at close range and amateur radio transmissions. 
+Sucessfully shows power values for various ISM signals, such as 5 GHz, 2.4 GHz WiFi, Bluetooth, 433/868 MHz ISM devices at close range and amateur radio transmissions at HF.
 
 At SHF band good sensitivity and results are achieved when using cheap Vivaldi antenna. 
 
