@@ -38,5 +38,5 @@ Also, additional shield could be helpful.
 
 Device must be powered from the battery only, powering from PC USB will cause PC USB RFI and other noise to be measured by the device.
 
-Signals with larger than +20 dBm levels could be measured with additional attenuator.
+Signals with larger than +20 dBm levels could be measured with additional external attenuator.
 
