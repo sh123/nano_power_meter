@@ -29,6 +29,8 @@
 #define BUZZER_MAX_RATE 10
 #define BUZZER_TONE 500
 #define BUZZER_DURATION_MS 10
+#define BUZZER_MIN_A_DBM -25
+#define BUZZER_MIN_B_DBM -35
 
 struct cal_t {
   int v;
@@ -36,38 +38,38 @@ struct cal_t {
 };
 
 cal_t calA_[CALA_TABLE_SIZE] = {
-  {  0,   -94 },
-  { 21,   -54 },
-  { 56,   -32 },
-  { 59,   -28 },
-  { 60,   -24 },
-  { 63,   -20 },
-  { 72,   -16 },
-  { 102,  -12 },
-  { 122,   -8 },
-  { 143,   -4 },
-  { 163,    0 },
-  { 204,    4 },
-  { 245,    8 },
-  { 409,   12 },
-  { 614,   20 },
-  { 1024,  30 }
+  {  0,   -91 },
+  { 21,   -51 },
+  { 56,   -29 },
+  { 59,   -25 },
+  { 60,   -21 },
+  { 63,   -17 },
+  { 72,   -13 },
+  { 102,   -9 },
+  { 122,   -5 },
+  { 143,   -1 },
+  { 163,    3 },
+  { 204,    7 },
+  { 245,   11 },
+  { 409,   15 },
+  { 614,   23 },
+  { 1024,  33 }
 };
 
 cal_t calB_[CALB_TABLE_SIZE] = {
-  {   0,  -90 },
-  {  80,  -80 },
-  { 100,  -70 },
-  { 150,  -60 },
-  { 210,  -50 },
-  { 290,  -40 },
-  { 308,  -30 },
-  { 330,  -20 },
-  { 410,  -10 },
-  { 480,    0 },
-  { 515,   10 },
-  { 540,   20 },
-  { 560,   30 }
+  {   0,  -77 },
+  {  80,  -67 },
+  { 100,  -57 },
+  { 150,  -47 },
+  { 210,  -37 },
+  { 290,  -27 },
+  { 308,  -17 },
+  { 330,   -7 },
+  { 410,    3 },
+  { 480,   13 },
+  { 515,   23 },
+  { 540,   33 },
+  { 560,   43 }
 };
 
 int valueA_, valueB_, valueA_1M_, valueB_1M_;
@@ -197,10 +199,10 @@ bool buzzer(void *) {
 }
 
 int getBuzzerRate(int dbmA, int dbmB) {
-  if (dbmA > -30 && dbmA > dbmB) {
+  if (dbmA > BUZZER_MIN_A_DBM && dbmA > dbmB) {
     return -0.2 * (double)(dbmA + 30) + BUZZER_MAX_RATE;
   }
-  else if (dbmB > -50) {
+  else if (dbmB > BUZZER_MIN_B_DBM) {
     return -0.14 * (double)(dbmB + 50) + BUZZER_MAX_RATE;
   }
   else {
