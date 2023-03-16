@@ -1,6 +1,6 @@
 (export (version D)
   (design
-    (source /home/sh/src/projects/Electronics/projects/power_meter/power_meter.sch)
+    (source ${KIPRJMOD}/power_meter.sch)
     (date "Sun 08 Nov 2020 10:17:13 AM EET")
     (tool "Eeschema 5.0.2+dfsg1-1")
     (sheet (number 1) (name /) (tstamps /)
