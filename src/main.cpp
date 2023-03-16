@@ -79,61 +79,6 @@ Timer<4, micros> timer_;
 
 Adafruit_SSD1306 display_(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire);
 
-void setup() {
-  Serial.begin(115200);
-  while (!Serial);
-  
-  if(!display_.begin(SSD1306_SWITCHCAPVCC, 0x3C)) 
-  {
-    Serial.println(F("SSD1306 allocation failed"));
-    for(;;);
-  }
-
-  display_.clearDisplay();
-  display_.setTextSize(2);      // Normal 1:1 pixel scale
-  display_.setTextColor(SSD1306_WHITE); // Draw white text
-  display_.setCursor(8, 8);     // Start at top-left corner
-  display_.print(F("PWR meter"));
-  display_.display();
-  delay(STARTUP_DELAY_MS);
-  
-  display_.clearDisplay();
-  display_.display();
-
-  valueA_ = valueA_1M_ = DEFAULT_VALUE_A;
-  valueB_ = valueB_1M_ = DEFAULT_VALUE_B;
-  buzzerRate_ = buzzerCounter_ = 0;
-
-  pinMode(PIN_BUZZER, OUTPUT);
-  
-  timer_.every(MEASURE_PERIOD_1M_US, clean1MValue);
-  timer_.every(SCREEN_UPDATE_PERIOD_US, printMeasuredValue);
-  timer_.every(MEASURE_PERIOD_US, measure);
-  timer_.every(BUZZER_PERIOD_US, buzzer);
-}
-
-void loop() {
-  timer_.tick();
-}
-
-bool measure(void *) {
-  int vA = analogRead(PIN_SHF);
-  if (vA > valueA_) {
-    valueA_ = vA;
-  }
-  if (vA > valueA_1M_) {
-    valueA_1M_ = vA;
-  }
-  int vB = analogRead(PIN_VHF);
-  if (vB > valueB_) {
-    valueB_ = vB;
-  }
-  if (vB > valueB_1M_) {
-    valueB_1M_ = vB;
-  }
-  return true;
-}
-
 float toMw(int dbm) {
   return pow(10, (float)dbm / 10.0);
 }
@@ -179,23 +124,6 @@ int toDbmB(int adValue) {
    prevDbm = calB_[i].dbm;
   }
   return calB_[CALB_TABLE_SIZE - 1].dbm;
-}
-
-bool clean1MValue(void *) {
-  valueA_1M_ = DEFAULT_VALUE_A;
-  valueB_1M_ = DEFAULT_VALUE_B;
-  return true;
-}
-
-bool buzzer(void *) {
-  if (buzzerRate_ > 0 && buzzerCounter_ % buzzerRate_ == 0) {
-    tone(PIN_BUZZER, BUZZER_TONE, BUZZER_DURATION_MS);
-  }
-  else {
-    noTone(PIN_BUZZER);
-  }
-  buzzerCounter_++;
-  return true;
 }
 
 int getBuzzerRate(int dbmA, int dbmB) {
@@ -266,4 +194,76 @@ bool printMeasuredValue(void *) {
 
   buzzerRate_ = getBuzzerRate(dbmA, dbmB);
   return true;
+}
+
+bool clean1MValue(void *) {
+  valueA_1M_ = DEFAULT_VALUE_A;
+  valueB_1M_ = DEFAULT_VALUE_B;
+  return true;
+}
+
+bool buzzer(void *) {
+  if (buzzerRate_ > 0 && buzzerCounter_ % buzzerRate_ == 0) {
+    tone(PIN_BUZZER, BUZZER_TONE, BUZZER_DURATION_MS);
+  }
+  else {
+    noTone(PIN_BUZZER);
+  }
+  buzzerCounter_++;
+  return true;
+}
+
+bool measure(void *) {
+  int vA = analogRead(PIN_SHF);
+  if (vA > valueA_) {
+    valueA_ = vA;
+  }
+  if (vA > valueA_1M_) {
+    valueA_1M_ = vA;
+  }
+  int vB = analogRead(PIN_VHF);
+  if (vB > valueB_) {
+    valueB_ = vB;
+  }
+  if (vB > valueB_1M_) {
+    valueB_1M_ = vB;
+  }
+  return true;
+}
+
+void setup() {
+  Serial.begin(115200);
+  while (!Serial);
+  
+  if(!display_.begin(SSD1306_SWITCHCAPVCC, 0x3C)) 
+  {
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;);
+  }
+
+  display_.clearDisplay();
+  display_.setTextSize(2);      // Normal 1:1 pixel scale
+  display_.setTextColor(SSD1306_WHITE); // Draw white text
+  display_.setCursor(8, 8);     // Start at top-left corner
+  display_.print(F("PWR meter"));
+  display_.display();
+  delay(STARTUP_DELAY_MS);
+  
+  display_.clearDisplay();
+  display_.display();
+
+  valueA_ = valueA_1M_ = DEFAULT_VALUE_A;
+  valueB_ = valueB_1M_ = DEFAULT_VALUE_B;
+  buzzerRate_ = buzzerCounter_ = 0;
+
+  pinMode(PIN_BUZZER, OUTPUT);
+  
+  timer_.every(MEASURE_PERIOD_1M_US, clean1MValue);
+  timer_.every(SCREEN_UPDATE_PERIOD_US, printMeasuredValue);
+  timer_.every(MEASURE_PERIOD_US, measure);
+  timer_.every(BUZZER_PERIOD_US, buzzer);
+}
+
+void loop() {
+  timer_.tick();
 }
