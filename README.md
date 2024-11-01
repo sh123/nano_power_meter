@@ -24,8 +24,8 @@ Unlike original meter, which is just an indicator, this device shows precise dBm
 - Geiger counter style buzzer for audiable signal level indication
 - Must be powered from the battery (e.g. 9V)
 
-# Dependencies
-- Arduino timer: https://github.com/contrem/arduino-timer
+# Building
+User platformio to build and upload.
 
 # Results
 Sucessfully shows power values for various ISM signals, such as 5 GHz, 2.4 GHz WiFi, Bluetooth, 433/868 MHz ISM devices at close range and amateur radio transmissions at HF.
